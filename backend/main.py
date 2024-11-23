@@ -1,42 +1,31 @@
-from flask import Flask, request, jsonify
-import whisper
-import openai
-import os
+from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 
-app = Flask(_name_)
+from api import router
 
-# Load Whisper model
-model = whisper.load_model("base")
 
-# Set OpenAI API Key
-openai.api_key = "YOUR_OPENAI_API_KEY"
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Starting up...")
+    yield
+    print("Shutting down...")
 
-@app.route("/upload", methods=["POST"])
-def upload_audio():
-    # Save the uploaded audio file
-    if "audio" not in request.files:
-        return jsonify({"error": "No audio file uploaded"}), 400
 
-    audio_file = request.files["audio"]
-    file_path = os.path.join("uploads", audio_file.filename)
-    audio_file.save(file_path)
+app = FastAPI(lifespan=lifespan)
 
-    # Transcribe the audio using Whisper
-    result = model.transcribe(file_path)
-    transcription = result["text"]
-    print("Transcription:", transcription)
+origins = ["*"]
 
-    # Send transcription to ChatGPT
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": transcription}]
-    )
-    chatgpt_response = response["choices"][0]["message"]["content"]
-    print("ChatGPT Response:", chatgpt_response)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    # Send the response back to the frontend
-    return jsonify({"transcription": transcription, "chatgpt_response": chatgpt_response})
+app.include_router(router)
 
-if _name_ == "_main_":
-    os.makedirs("uploads", exist_ok=True)
-    app.run(debug=True)
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
