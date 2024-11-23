@@ -6,3 +6,4 @@
 
 13:10 - Thought of our problem statement and pitched/got it verified by Tanmay.
 
+15:41 - Created inital figma designes and initialized the next app
