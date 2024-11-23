@@ -9,3 +9,5 @@
 15:41 - Created inital figma designes and initialized the next app
 
 19:06 - Added home page and created interview page
+
+21:22 - Created basic backend api framework
