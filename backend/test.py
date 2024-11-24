@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 from pyAudioAnalysis import audioBasicIO
 from pyAudioAnalysis import ShortTermFeatures
 
-def audio_analysis():
+def audio_analysis(path):
     # Load the audio file
-    audio_path = "test.wav"
+    audio_path = path
     [Fs, x] = audioBasicIO.read_audio_file(audio_path)  # Fs: Sampling rate, x: Audio signal
 
     # Convert to mono if the audio is stereo
