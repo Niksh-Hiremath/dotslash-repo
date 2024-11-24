@@ -1,70 +1,68 @@
 {
-    "questions": {
-        "1": {
-            "function": "twoSum",
-            "testcases": [
-                {
-                    "input": {
-                        "nums": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5
-                        ],
-                        "target": 9
-                    },
-                    "solutions": [
-                        [
-                            3,
-                            4
-                        ],
-                        [
-                            4,
-                            3
-                        ]
-                    ]
+    "1": {
+        "function": "twoSum",
+        "testcases": [
+            {
+                "input": {
+                    "nums": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5
+                    ],
+                    "target": 9
                 },
-                {
-                    "input": {
-                        "nums": [
-                            3,
-                            2,
-                            4
-                        ],
-                        "target": 6
-                    },
-                    "solutions": [
-                        [
-                            1,
-                            2
-                        ],
-                        [
-                            2,
-                            1
-                        ]
+                "solutions": [
+                    [
+                        3,
+                        4
+                    ],
+                    [
+                        4,
+                        3
                     ]
+                ]
+            },
+            {
+                "input": {
+                    "nums": [
+                        3,
+                        2,
+                        4
+                    ],
+                    "target": 6
                 },
-                {
-                    "input": {
-                        "nums": [
-                            3,
-                            3
-                        ],
-                        "target": 6
-                    },
-                    "solutions": [
-                        [
-                            0,
-                            1
-                        ],
-                        [
-                            1,
-                            0
-                        ]
+                "solutions": [
+                    [
+                        1,
+                        2
+                    ],
+                    [
+                        2,
+                        1
                     ]
-                }
-            ]
-        }
+                ]
+            },
+            {
+                "input": {
+                    "nums": [
+                        3,
+                        3
+                    ],
+                    "target": 6
+                },
+                "solutions": [
+                    [
+                        0,
+                        1
+                    ],
+                    [
+                        1,
+                        0
+                    ]
+                ]
+            }
+        ]
     }
 }

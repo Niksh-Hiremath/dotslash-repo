@@ -7,9 +7,10 @@ from pathlib import Path
 from uuid import uuid4
 import whisper
 import openai
-from RestrictedPython import compile_restricted
-from RestrictedPython import safe_globals
 import json
+import textwrap
+# from RestrictedPython import compile_restricted
+# from RestrictedPython import safe_globals
 
 load_dotenv()
 
@@ -30,42 +31,52 @@ SESSIONS = {}
 with open("solutions.json", "r") as f:
     SOLUTIONS = json.load(f)
 
+with open("prompt.txt", "r") as f:
+    PROMPT = f.read()
 
-def check_leetcode_solution(
+
+async def check_leetcode_solution(
     code: str, func: str, solutions: list, *input: list
 ) -> bool:
     try:
-        compiled_code = compile_restricted(code, "<string>", "exec")
-        exec(compiled_code, safe_globals, {})
+        # compiled_code = compile_restricted(code, "<string>", "exec")
+        # local_vars = {}
+        # exec(compiled_code, safe_globals, local_vars)
 
-        if "Solution" in safe_globals and hasattr(safe_globals["Solution"], func):
-            result = safe_globals["Solution"]().__getattribute__(func)(*input)
-            if result in solutions:
-                return True
+        # print("Local Vars:", local_vars)
+        # if "Solution" in local_vars and hasattr(local_vars["Solution"], func):
+        #     result = getattr(local_vars["Solution"](), func)(*input)
+        #     print("Result:", result)
+        #     if result in solutions:
+        #         return True
+        # return False
+        loc = {}
+        code = f"async def func():\n{textwrap.indent(code, '  ')}\n\n  sol = Solution().{func}({','.join(map(str, input))})\n  return sol in {solutions}"
+        result = exec(code, loc)
+        func = loc["func"]
+        result = await func()
+        if result is True:
+            return True
         return False
     except Exception:
-        return True
+        return False
 
 
 @router.post("/check-code")
 async def check_code(
-    authorization: str = Annotated[
-        str,
-        Header(..., description="Authorization Key", alias="Authorization"),
-    ],
-    question_id: str = Annotated[
-        str,
-        Body(..., description="LeetCode Question ID", alias="question_id"),
-    ],
-    code: str = Annotated[str, Body(..., description="Code to check", alias="code")],
+    authorization=Header(..., alias="Authorization"),
+    question_id=Body(..., alias="QuestionId"),
+    code=Body(..., alias="code"),
 ):
     if authorization != AUTHORIZATION_KEY:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    func = SOLUTIONS[question_id]["func"]
+    func = SOLUTIONS[question_id]["function"]
     for testcase in SOLUTIONS[question_id]["testcases"]:
-        if not check_leetcode_solution(
-            code, func, testcase["solutions"], *testcase["input"].values()
+        if not (
+            await check_leetcode_solution(
+                code, func, testcase["solutions"], *testcase["input"].values()
+            )
         ):
             return JSONResponse({"success": False, "result": "Incorrect"})
     return JSONResponse({"success": True, "result": "Correct"})
@@ -84,7 +95,7 @@ async def upload_audio(
 
     try:
         # Save the uploaded audio file
-        file_path = UPLOAD_DIR / f"{uuid4}-{audio.filename}"
+        file_path = UPLOAD_DIR / f"{uuid4()}-{audio.filename}"
         with open(file_path, "wb") as f:
             f.write(await audio.read())
 
@@ -95,7 +106,11 @@ async def upload_audio(
 
         # Send transcription to ChatGPT
         response = openai.ChatCompletion.create(
-            model="gpt-4", messages=[{"role": "user", "content": transcription}]
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": PROMPT},
+                {"role": "user", "content": transcription},
+            ],
         )
         chatgpt_response = response["choices"][0]["message"]["content"]
         print("ChatGPT Response:", chatgpt_response)
