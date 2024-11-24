@@ -81,7 +81,7 @@ async def check_code(
 
 
 def send_chatgpt(messages: list):
-    response = openai.ChatCompletion.create(
+    response = openai.chat.completions.create(
         model="gpt-4o",
         messages=[
             SYSTEM_MESSAGE,
@@ -92,7 +92,7 @@ def send_chatgpt(messages: list):
 
 
 def get_summary(messages: list):
-    response = openai.ChatCompletion.create(
+    response = openai.chat.completions.create(
         model="gpt-4",
         messages=[
             SYSTEM_MESSAGE,

@@ -11,7 +11,7 @@ export default function AudioChat() {
     try {
       // Create a FormData object and append the audio blob
       const formData = new FormData();
-      formData.append("audio", audioBlob, "recording.webm");
+      formData.append("audio", audioBlob, "recording.wav");
 
       // Send the audio to the API
       const response = await fetch("/api/chat", {

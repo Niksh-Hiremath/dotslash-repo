@@ -23,7 +23,7 @@ export default function AudioRecorder({ onAudioRecorded }: AudioRecorderProps) {
       };
 
       mediaRecorderRef.current.onstop = () => {
-        const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const audioBlob = new Blob(chunksRef.current, { type: "audio/wav" });
         onAudioRecorded(audioBlob);
         chunksRef.current = [];
       };
