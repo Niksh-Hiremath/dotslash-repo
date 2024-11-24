@@ -11,10 +11,24 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    const response = await fetch("https://localhost:8000", {
+      method: "POST",
+      headers: {
+        "Content-Type": audio.type,
+      },
+      body: audio,
+    });
 
-    //SEND AND RECEIVE
+    if (!response.ok) {
+      return NextResponse.json(
+        { error: "Failed to process audio" },
+        { status: response.status }
+      );
+    }
 
-    return new NextResponse(audio, {
+    const processedAudio = await response.blob();
+
+    return new NextResponse(processedAudio, {
       headers: {
         "Content-Type": audio.type,
       },

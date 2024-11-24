@@ -85,10 +85,10 @@ def send_chatgpt(messages: list):
         model="gpt-4o",
         messages=[
             SYSTEM_MESSAGE,
-            *messages,
+            *messages["messages"],
         ],
     )
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
 
 
 def get_summary(messages: list):
@@ -96,11 +96,11 @@ def get_summary(messages: list):
         model="gpt-4",
         messages=[
             SYSTEM_MESSAGE,
-            *messages,
+            *messages["messages"],
             SUMMARY_MESSAGE,
         ],
     )
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
 
 
 def transcribe(path):
@@ -231,7 +231,7 @@ async def upload_audio(
         # except FileNotFoundError:
         #     pass
 
-        if len(SESSIONS[session_id]["messages"]) > 5:
+        if len(SESSIONS[session_id]["messages"]) >= 1:
             results = get_summary(SESSIONS[session_id])
             return JSONResponse(
                 {
