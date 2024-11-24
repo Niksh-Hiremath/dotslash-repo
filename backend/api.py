@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Header, HTTPException, UploadFile, File, Body
+from fastapi import APIRouter, Header, HTTPException, File, Body
 from fastapi.responses import JSONResponse
-from typing import Annotated
 import os
 from dotenv import load_dotenv
 from pathlib import Path
@@ -28,7 +27,6 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 client = openai.OpenAI()
-
 
 SESSIONS = {}
 
@@ -84,7 +82,7 @@ async def check_code(
 
 def send_chatgpt(messages: list):
     response = openai.ChatCompletion.create(
-        model="gpt-4",
+        model="gpt-4o",
         messages=[
             SYSTEM_MESSAGE,
             *messages,
@@ -191,12 +189,9 @@ def audio_analysis(path):
 
 @router.post("/chat")
 async def upload_audio(
-    authorization: str = Annotated[
-        str,
-        Header(..., description="Authorization Key", alias="Authorization"),
-    ],
-    audio: UploadFile = Annotated[UploadFile, File(...)],
-    session_id: str = Annotated[str, Body(..., description="Session ID")],
+    authorization=Header(..., alias="Authorization"),
+    audio=File(...),
+    session_id=Body(None, alias="SessionId"),
 ):
     if authorization != AUTHORIZATION_KEY:
         raise HTTPException(status_code=401, detail="Unauthorized")
@@ -206,6 +201,9 @@ async def upload_audio(
         file_path = UPLOAD_DIR / f"{uuid4()}-{audio.filename}"
         with open(file_path, "wb") as f:
             f.write(await audio.read())
+
+        if session_id is None:
+            session_id = str(uuid4())
 
         if session_id not in SESSIONS:
             # Analyze the audio using pyAudioAnalysis
@@ -228,16 +226,17 @@ async def upload_audio(
         SESSIONS[session_id]["messages"].append({"role": "system", "content": response})
 
         # Delete the file after processing
-        try:
-            os.remove(file_path)
-        except FileNotFoundError:
-            pass
+        # try:
+        #     os.remove(file_path)
+        # except FileNotFoundError:
+        #     pass
 
         if len(SESSIONS[session_id]["messages"]) > 5:
             results = get_summary(SESSIONS[session_id])
             return JSONResponse(
                 {
                     "success": True,
+                    "session_id": session_id,
                     "transcription": transcription,
                     "response": response,
                     "summary": results,
@@ -247,6 +246,7 @@ async def upload_audio(
         return JSONResponse(
             {
                 "success": True,
+                "session_id": session_id,
                 "transcription": transcription,
                 "response": response,
             }

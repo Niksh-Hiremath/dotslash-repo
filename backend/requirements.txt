@@ -6,3 +6,7 @@ openai-whisper
 requests
 numpy
 pyAudioAnalysis
+pyttsx3
+eyed3
+pydub
+scipy

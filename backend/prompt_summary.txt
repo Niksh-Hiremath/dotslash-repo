@@ -1,0 +1,17 @@
+After 5 questions (history given) generate a report, with two things.
+
+1) A dictionary with the keys = criteria and value = list of score scoring them for each bucket and the subjective feedback for each bucket.
+Example: {
+    "accuracy": [6, "While the approach is on the right track, there were some issues with the logic of index handling and the condition to ensure distinct elements."], 
+    "depth_of_knowledge": [7, "You correctly identified the possibility of using a hash map for optimization, but there were some gaps in handling edge cases and indexing, which can be crucial for full understanding."],
+    "critical_thinking: [5, "The solution works for smaller cases but could have deeper exploration regarding edge cases, optimizations, and indexing behaviors."],
+    "relevance": [6, "The discussion was relevant to the problem, though a more thorough explanation of how the solution could be generalized for all cases would have been helpful."]
+}
+
+2) Give general feedback on what they did well and how to do better, also in the same python dictionary as keys and their responses as values.
+Example: {
+    "what_went_well": "You were able to identify a possible optimization using a hash map, which is a good direction.",
+    "how_to_do_better": "Pay more attention to the nuances of indexing and edge cases. The code snippet you provided has some logical flaws in handling indices correctly, which could lead to errors or incorrect results in some scenarios. You should focus on thoroughly testing your code for various edge cases, and always ensure that the logic for excluding repeated elements is robust. Consider how you can optimize both time and space complexity. Keep practicing, and focus on debugging the edge cases—this will help you build a deeper understanding of algorithms and their applications!"
+}
+
+DO NOT forget to return final output as a python dictionary.
