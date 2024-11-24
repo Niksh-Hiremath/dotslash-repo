@@ -11,3 +11,9 @@
 19:06 - Added home page and created interview page
 
 21:22 - Created basic backend api framework
+
+## 24th Nov 2024
+
+02:30 - Finished figma designs
+
+06:16 - Nap break from last checkpoint
