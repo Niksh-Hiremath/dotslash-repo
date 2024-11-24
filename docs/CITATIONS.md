@@ -2,10 +2,10 @@ Citations:
 
 A] Software employed:
 
-V0.dev for front End
-Chat GPT API call
-Ready Player Me for Animatronic
-LeetCode
+1)V0.dev 
+2)Chat GPT API call
+3)Ready Player Me for Animatronic
+4)LeetCode
 
 B] Articles used: 
 
