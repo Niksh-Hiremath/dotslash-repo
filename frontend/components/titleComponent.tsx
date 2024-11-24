@@ -2,14 +2,23 @@
 
 import { useState } from "react";
 import SearchBar from "./searchBar";
+import { Arima } from "next/font/google";
+
+const arima = Arima({
+  subsets: ["latin"],
+  weight: "variable",
+});
 
 function TitleComponent() {
   const [search, setSearch] = useState("");
   return (
     <div className="flex justify-center items-center h-full overflow-hidden pb-56">
       <div className="flex gap-10 flex-col">
-        <h1 className="text-5xl font-bold text-center mt-20 text-[#9ABFFF]">
-          Welcome to Leap Code
+        <h1
+          className={`text-8xl font-bold text-center mt-20 text-[#9ABFFF] ${arima.className}`}
+        >
+          <span className="text-[#3C6E71]">LEAP</span>
+          <span className="text-white">Code</span>
         </h1>
         <SearchBar search={search} setSearch={setSearch} />
         <div className="flex justify-center">
